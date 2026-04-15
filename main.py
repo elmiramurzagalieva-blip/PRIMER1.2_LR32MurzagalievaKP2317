@@ -57,13 +57,12 @@ def analyze(e):
     score = min(score, 100)
     sev = next((lvl for thr, lvl in SEVERITY if score >= thr), "НИЗКИЙ")
     status = "ЗАБЛОКИРОВАНО" if score >= THRESHOLD else "РАЗРЕШЕНО"
-    return {
-        **e,
-        "score": score,
-        "status": status,
-        "reason": "; ".join(reasons) or "Чисто",
-        "severity": sev,
-    }
+    result = e.copy()
+    result["score"] = score
+    result["status"] = status
+    result["reason"] = "; ".join(reasons) or "Чисто"
+    result["severity"] = sev
+    return result
 
 
 def process(data):
@@ -72,16 +71,15 @@ def process(data):
 
 # Контейнер табличного представления
 def print_console_tables(res):
-    print(' ')
     print("\nТАБЛИЦА 1 - ЖУРНАЛ ЛОГОВ")
     print(
-        f"{'№':<3} {'ВРЕМЯ':<6} {'ИСТОЧНИК':<9} {'URL':<40} {'СТАТУС':<16} {'РИСК':<5} {'УРОВЕНЬ':<10} {'ПРИЧИНА'}"
+        f"{'№':<3} {'ВРЕМЯ':<6} {'ИСТОЧНИК':<9} {'URL':<36} {'СТАТУС':<16} {'РИСК':<5} {'УРОВЕНЬ':<10} {'ПРИЧИНА'}"
     )
  
     for i, r in enumerate(res, 1):
         url_s = r["url"][:40] + ".." if len(r["url"]) > 42 else r["url"]
         print(
-            f"{i:<3} {r['time']:<6} {r['src']:<9} {url_s:<40} {r['status']:<16} {r['score']:<5} {r['severity']:<10} {r['reason']}"
+            f"{i:<3} {r['time']:<6} {r['src']:<9} {url_s:<36} {r['status']:<16} {r['score']:<5} {r['severity']:<10} {r['reason']}"
         )
 
     total, blocked = len(res), sum(1 for r in res if r["status"] == "ЗАБЛОКИРОВАНО")
