@@ -129,7 +129,7 @@ def save_charts(res):
         st[r["status"]] += 1
     fig, ax = plt.subplots()
     ax.pie(
-        st.values(), labels=st.keys(), autopct="%1.1f%%", colors=["#CD5C5C", "#F08080"]
+        st.values(), labels=st.keys(), autopct="%1.1f%%", colors=["#BDB76B", "#F08080"]
     )
     ax.set_title("Решения микросервиса")
     fig.savefig("status_chart.png", dpi=150, bbox_inches="tight")
